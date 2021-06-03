@@ -1,5 +1,5 @@
 #include "HashTable.h"
-
+//by merve
 template <class T>
 HashTable<T>::HashTable() {
     tableSize = 2;
