@@ -2,20 +2,25 @@
 #define HASHTABLEITEM_H
 
 #include <iostream>
+#include <string>
+
+using namespace std;
 
 // DO NOT CHANGE THIS FILE.
 
-template <class T>
+template <class Key, class Value>
 class HashTableItem {
-public:
-    std::string key;
-    T value;
+    friend class HashTable;
+private:
+    Key key;
+    Value value;
     bool deleted;
-    bool active;
+    bool active
 
+public:
     HashTableItem() : key(), value(), deleted(false), active(false) {}
 
-    friend std::ostream& operator<<(std::ostream& os, const HashTableItem& item) {
+    friend ostream& operator<<(ostream& os, const HashTableItem& item) {
         os << "key: " << (item.key == "" ? "empty" : item.key) << " | ";
         os << "value: " << item.value << " | ";
         os << "deleted: " << (item.deleted ? "true" : "false") << " | ";

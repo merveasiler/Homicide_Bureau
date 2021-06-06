@@ -16,11 +16,11 @@ public:
 
 	// Should be called for adding suspects to the heap.
 	// The method will not have no effect if the suspect is already on the heap. 
-	void insert(const Key& key, const Probability& priority);
+	void insert(const Key& key, const Probability& probability);
 
 	// NOTE: This method is expected to return HEAP_EMPTY, 
 	// if the heap is empty
-	const Key deleteMin();
+	const Key deleteMax();
 
 	// Will update the probability value of the suspect if it is on the heap
 	// will not effect the heap otherwise. 
@@ -41,13 +41,13 @@ private:
 
 	// NOTE: You may add private members or method declarations under this line
 
-	HashTable<Key, Probability> probabilityHash;
-	HashTable<Key, int> indexHash;
-	int currentSize;
+	HashTable<Key, Probability> probabilityHash;	// holds [key : probability] pair
+	HashTable<Key, int> heapIndexHash;				// holds [key : heap index] pair
+	int heapSize;
 	vector<Key> keyArray;
-	int percolateUp(int index, bool regard);
-	int percolateDown(int index, bool regard);
-	void swap(int index1, int index2);
+	
+	void percolateDown(int hole);
+	void percolateUp(int hole);
 
 };
 
