@@ -6,13 +6,12 @@
 template<class Key, class Probability>
 class ProbabilityHeap {
 
-public:
+public:	// DO NOT CHANGE THIS PART.
 
-	ProbabilityHeap(Probability suspectNotFound, Key heapEmpty, int capacity)
-		: SUSPECT_NOT_ON_HEAP(suspectNotFound), HEAP_EMPTY(heapEmpty),
-		capacity(capacity), probabilityHash(suspectNotFound), indexHash(-1), currentSize(0), keyArray(capacity + 1)
-	{
-	}
+	ProbabilityHeap(Key heap_empty, Probability suspect_not_on_heap)
+		: HEAP_EMPTY(heap_empty), SUSPECT_NOT_ON_HEAP(suspect_not_on_heap) {
+		initialize();	// You can do initializations inside initialize() method.
+	};
 
 	// Should be called for adding suspects to the heap.
 	// The method will not have no effect if the suspect is already on the heap. 
@@ -36,8 +35,9 @@ public:
 private:
 
 	int capacity;
-	const Probability SUSPECT_NOT_ON_HEAP;
 	const Key HEAP_EMPTY;
+	const Probability SUSPECT_NOT_ON_HEAP;
+	void initialize();	// You can do initializations inside initialize() method.
 
 	// NOTE: You may add private members or method declarations under this line
 
@@ -45,9 +45,10 @@ private:
 	HashTable<Key, int> heapIndexHash;				// holds [key : heap index] pair
 	int heapSize;
 	vector<Key> keyArray;
-	
+
 	void percolateDown(int hole);
 	void percolateUp(int hole);
+	void resizeKeyArray();
 
 };
 

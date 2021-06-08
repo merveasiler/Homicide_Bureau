@@ -32,5 +32,8 @@
     <ClCompile Include="ProbabilityHeap.cpp">
       <Filter>Kaynak Dosyaları</Filter>
     </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Kaynak Dosyaları</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

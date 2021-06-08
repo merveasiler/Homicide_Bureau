@@ -1,6 +1,13 @@
 #include "ProbabilityHeap.h"
 
 template<class Key, class Probability>
+void ProbabilityHeap<Key, Probability>::initialize() {
+	capacity = 3;	// 2+1
+	heapSize = 0;
+	keyArray.resize(capacity);
+}
+
+template<class Key, class Probability>
 void ProbabilityHeap<Key, Probability>::percolateDown(int hole) {
 	int child;
 	Key k = keyArray[hole];
@@ -41,15 +48,33 @@ void ProbabilityHeap<Key, Probability>::percolateUp(int hole) {
 }
 
 template<class Key, class Probability>
+void ProbabilityHeap<Key, Probability>::resizeKeyArray() {
+	for (int i = 0; i < 15; i++)
+		if (capacity - 1 == primeNumbers[i]) {
+			capacity = primeNumbers[i + 1] + 1;
+			break;
+		}
+	vector<Key> tempKeyArray = keyArray;
+	tempKeyArray.resize(capacity);
+	for (int i = 1; i <= heapSize; i++)
+		tempKeyArray[i] = keyArray[i];
+	keyArray.resize(capacity);
+	keyArray = tempKeyArray;
+}
+
+template<class Key, class Probability>
 void ProbabilityHeap<Key, Probability>::insert(const Key& key, const Probability& probability) {
-	
-	if (getProbability(key) != SUSPECT_NOT_ON_HEAP || heapSize == capacity)
-		return;		// it is already inserted or capacity is full
-	
+
+	if (getProbability(key) != SUSPECT_NOT_ON_HEAP)
+		return;		// it is already inserted
+
 	probabilityHash.insert(key, probability);
 	heapIndexHash.insert(key, 0);	// later it will be updated inside percolateUp()
 
 	// percolate up
+	if (heapSize + 1 == capacity)
+		resizeKeyArray();
+
 	keyArray[0] = key;	// temporarily hold there
 	heapSize++;
 	percolateUp(heapSize);
@@ -59,7 +84,7 @@ void ProbabilityHeap<Key, Probability>::insert(const Key& key, const Probability
 template<class Key, class Probability>
 const Key ProbabilityHeap<Key, Probability>::deleteMax() {
 
-	if (heapSize == 0) 
+	if (heapSize == 0)
 		return HEAP_EMPTY;
 
 	Key maxKey = keyArray[1];
@@ -67,7 +92,7 @@ const Key ProbabilityHeap<Key, Probability>::deleteMax() {
 	heapSize--;
 	percolateDown(1);
 
-	probabiltyHash.remove(maxKey);
+	probabilityHash.remove(maxKey);
 	heapIndexHash.remove(maxKey);
 	return maxKey;
 
@@ -81,17 +106,20 @@ void ProbabilityHeap<Key, Probability>::updateProbability(const Key& key, const 
 
 	Probability oldProbability = getProbability(key);
 	probabilityHash.insert(key, newProbability);	// it updates the current bucket where the key is in
-	
-	if (oldProbability < newProbability) 
-		percolateUp(heapIndexHash.find(key));
-	else if (oldProbability > newProbability) 
-		percolateDown(heapIndexHash.find(key));
+
+	if (oldProbability < newProbability)
+		percolateUp(heapIndexHash.find(key)->getValue());
+	else if (oldProbability > newProbability)
+		percolateDown(heapIndexHash.find(key)->getValue());
 
 }
 
 template<class Key, class Probability>
 const Probability& ProbabilityHeap<Key, Probability>::getProbability(const Key& key) const {
-	return probabilityHash.find(key);
+	const HashTableItem<Key, Probability>* item = probabilityHash.find(key);
+	if (item == NULL)
+		return SUSPECT_NOT_ON_HEAP;
+	return item->getValue();
 }
 
 template<class Key, class Probability>
